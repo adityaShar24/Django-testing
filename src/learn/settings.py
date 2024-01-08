@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'learn_app'
+    'learn_app',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +80,7 @@ WSGI_APPLICATION = 'learn.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "learn_cbv_and_testing",
         'USER':'Aditya',
         'PASSWORD':'aditya123',
         'HOST': 'localhost',
