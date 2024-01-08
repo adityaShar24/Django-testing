@@ -49,7 +49,7 @@ class LoginView(APIView):
             username = serializer.data['username']
             password = serializer.data['password']
             
-            user = authenticate(request , username , password)
+            user = authenticate(request = request , username = username , password = password)
             
             if user is None:
                 response = Response({"message": INVAID_CREDENTIALS_MESSAGE} , HTTP_400_BAD_REQUEST)
@@ -58,13 +58,14 @@ class LoginView(APIView):
             
             refresh = RefreshToken.for_user(user)
             
-            response = {
-                {
+            response_data = {
                     "message": USER_LOGGEDIN_MESSAGE.format(username = username), 
                     "refresh": str(refresh),
                     "access": str(access)
                 }
-            }
+            
+            
+            response = Response( response_data , status= HTTP_201_CREATED)
             
         else:
             response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
