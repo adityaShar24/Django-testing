@@ -23,12 +23,12 @@ class RegisterView(APIView):
             user.set_password(serializer.validated_data['password'])
             user.save()
         
-            reponse_data = {
+            response_data = {
                 "message": USER_REGISTERED_MESSAGE,
                 "data": serializer.data
             }
             
-            response = Response(reponse_data , HTTP_201_CREATED)
+            response = Response(response_data , HTTP_201_CREATED)
         else:
             response = Response(serializer.errors , status= HTTP_400_BAD_REQUEST) 
     
@@ -51,10 +51,12 @@ class LoginView(APIView):
             
             user = authenticate(request = request , username = username , password = password)
             
+            
             if user is None:
                 response = Response({"message": INVAID_CREDENTIALS_MESSAGE} , HTTP_400_BAD_REQUEST)
             
             access = AccessToken.for_user(user)
+            
             
             refresh = RefreshToken.for_user(user)
             
