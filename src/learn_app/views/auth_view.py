@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_200_OK
 from rest_framework_simplejwt.tokens import AccessToken , RefreshToken
-from ..utils.constants import USER_REGISTERED_MESSAGE , INVAID_CREDENTIALS_MESSAGE , USER_LOGGEDIN_MESSAGE
+from ..utils.constants import USER_REGISTERED_MESSAGE , INVAID_CREDENTIALS_MESSAGE , USER_LOGGEDIN_MESSAGE , ALL_USERS_FETCHED_MESSAGE
 from ..serializers.user_serializer import RegisterSerializer
 from ..serializers.login_serializer import LoginSerializer
 
@@ -73,4 +74,24 @@ class LoginView(APIView):
             response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
             
         return response
+
+
+
+class ListUsersView(APIView):
     
+    def get(self , request):
+        
+        response = None
+        
+        users = User.objects.all()
+        
+        serializer = RegisterSerializer(users , many = True)
+        
+        response_data = {
+            "message": ALL_USERS_FETCHED_MESSAGE,
+            "data": serializer.data
+        }
+        
+        response = Response(response_data , status= HTTP_200_OK)
+        
+        return response
