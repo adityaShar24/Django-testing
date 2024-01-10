@@ -15,5 +15,5 @@ class TestSetUp(APITestCase):
 
         super().setUp()
 
-    def create_test_user(self, username='user', password='users_password'):
+    def create_test_user(self, username='jayshreeVuva', password='Vuva'):
         return User.objects.create_user(username=username, password=password)
