@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_200_OK
 from rest_framework_simplejwt.tokens import AccessToken , RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from ..utils.constants import USER_REGISTERED_MESSAGE , INVAID_CREDENTIALS_MESSAGE , USER_LOGGEDIN_MESSAGE , ALL_USERS_FETCHED_MESSAGE
 from ..serializers.user_serializer import RegisterSerializer
 from ..serializers.login_serializer import LoginSerializer
@@ -78,6 +79,9 @@ class LoginView(APIView):
 
 
 class ListUsersView(APIView):
+    
+    authentication_classes = [JWTAuthentication]   
+
     
     def get(self , request):
         

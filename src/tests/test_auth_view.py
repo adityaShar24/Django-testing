@@ -1,7 +1,6 @@
 from .test_setup import TestSetUp
-import pdb
 
-class TestViews(TestSetUp):
+class TestAuthViews(TestSetUp):
     
     def test_register_with_no_data(self):
         
@@ -33,12 +32,12 @@ class TestViews(TestSetUp):
     def test_login_with_data(self):
         user = self.create_test_user()  # Create a new user for this test
         login_data = {
-            'username': 'jayshreeVuva',
-            'password': 'Vuva'
+            'username': 'username_02',
+            'password': 'paxa'
         }
         response = self.client.post(self.login_url , login_data , format='json')
         self.assertEqual(response.status_code , 201)
     
         self.assertIn('access', response.data)
-        
-
+    
+    

@@ -7,6 +7,14 @@ class TestSetUp(APITestCase):
     def setUp(self):
         self.register_url = reverse('register')
         self.login_url = reverse('login')
+        self.list_url = reverse('list')
+        
+        self.create_task_url = reverse('create')
+        
+        self.task_data = {
+            'title': 'Learn CBV in django',
+            'user': 2
+        }
 
         self.user_data = {
             'username': 'krisna',
@@ -15,5 +23,5 @@ class TestSetUp(APITestCase):
 
         super().setUp()
 
-    def create_test_user(self, username='jayshreeVuva', password='Vuva'):
+    def create_test_user(self, username='username_02', password='paxa'):
         return User.objects.create_user(username=username, password=password)

@@ -8,4 +8,4 @@ class TaskSerializer(serializers.ModelSerializer):
         
         model = Task
         
-        fields = '__all__'
+        fields = ['id', 'title', 'is_completed', 'date', 'user']
