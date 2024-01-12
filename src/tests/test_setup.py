@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import AccessToken
 from django.urls import reverse
 from django.contrib.auth.models import User
 
@@ -10,14 +11,17 @@ class TestSetUp(APITestCase):
         self.list_url = reverse('list')
         
         self.create_task_url = reverse('create')
+        self.user = self.create_test_user(username='krisna', password='viswa')
+        self.access_token = str(AccessToken.for_user(self.user))
+
         
         self.task_data = {
             'title': 'Learn CBV in django',
-            'user': 2
+            'user': self.user.id
         }
 
         self.user_data = {
-            'username': 'krisna',
+            'username': 'kisna',
             'password': 'viswa'
         }
 
