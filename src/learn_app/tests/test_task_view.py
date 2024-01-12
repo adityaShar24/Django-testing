@@ -1,6 +1,6 @@
 from .test_setup import TestSetUp
 
-class TaskTestViews(TestSetUp):
+class CreateTaskViewTest(TestSetUp):
     
     def test_create_task_with_no_data(self):
         
@@ -15,8 +15,6 @@ class TaskTestViews(TestSetUp):
             format='json',
             HTTP_AUTHORIZATION=f'Bearer {self.access_token}'
         )
-
-        print(response.data)
         
         self.assertEqual(response.status_code, 201, f"Response data: {response.data}")
     
@@ -35,3 +33,20 @@ class TaskTestViews(TestSetUp):
         )
         
         self.assertEqual(response.status_code , 400)
+        
+
+class UpdateTaskViewTest(TestSetUp):
+    
+    def test_update_task_success(self):
+        data = {'title': 'Updated Task Title'}
+        
+        response = self.client.post(
+            self.update_task_url , 
+            data , 
+            format='json' , 
+            HTTP_AUTHORIZATION = f'Bearer {self.access_token}'
+        )
+        
+        self.assertEqual(response.status_code , 201)
+        self.assertEqual(response.data['message'], 'Task has been updated successfully')
+        self.assertEqual(response.data['data']['title'], 'Updated Task Title')

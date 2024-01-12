@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from django.urls import reverse
 from django.contrib.auth.models import User
+from ..models.task_model import Task
 
 class TestSetUp(APITestCase):
 
@@ -10,9 +11,14 @@ class TestSetUp(APITestCase):
         self.login_url = reverse('login')
         self.list_url = reverse('list')
         
-        self.create_task_url = reverse('create')
         self.user = self.create_test_user(username='krisna', password='viswa')
         self.access_token = str(AccessToken.for_user(self.user))
+        
+        self.create_task_url = reverse('create')
+        
+        self.task = Task.objects.create(title= 'Test Task' , user = self.user)
+        
+        self.update_task_url = reverse('update' ,  kwargs={'pk': self.task.id})
 
         
         self.task_data = {
