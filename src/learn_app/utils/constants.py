@@ -6,3 +6,5 @@ ALL_USERS_FETCHED_MESSAGE = 'all users has fetched successfullyy! '
 
 INVAID_CREDENTIALS_MESSAGE = "Invalid username or password"
 PERMISSION_DENIED_MESSAGE = "You don't have permission to access this page"
+
+TASK_UPDATED_MESSAGE = 'Task has beed updated successfully'
