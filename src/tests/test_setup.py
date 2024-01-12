@@ -16,7 +16,7 @@ class TestSetUp(APITestCase):
 
         
         self.task_data = {
-            'title': 'Learn CBV in django',
+            'title': "Learn CBV in django",
             'user': self.user.id
         }
 
