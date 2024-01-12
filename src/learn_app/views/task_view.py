@@ -51,7 +51,7 @@ class UpdateTaskView(APIView):
         else:
             data = {
                 'title': request.data.get('title'),
-                'user': request.user.id('user')
+                'user': request.user.id
             }
             
             serializer = TaskSerializer(data= data)
