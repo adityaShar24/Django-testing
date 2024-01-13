@@ -1,6 +1,6 @@
 from .test_setup import TestSetUp
 
-class TestAuthViews(TestSetUp):
+class TestRegisterViews(TestSetUp):
     
     def test_register_with_no_data(self):
         
@@ -23,6 +23,10 @@ class TestAuthViews(TestSetUp):
         response = self.client.post(self.register_url , invalid_user_data , format='json')
         self.assertEqual(response.status_code , 400)
         
+
+
+class TestLoginView(TestSetUp):
+    
     def test_login_with_no_data(self):
         
         response = self.client.post(self.login_url, {}, format='json')
@@ -30,14 +34,14 @@ class TestAuthViews(TestSetUp):
         self.assertEqual(response.status_code, 400)
             
     def test_login_with_data(self):
-        user = self.create_test_user()  # Create a new user for this test
+        self.create_test_user()
         login_data = {
             'username': 'username_02',
             'password': 'paxa'
         }
         response = self.client.post(self.login_url , login_data , format='json')
+
         self.assertEqual(response.status_code , 201)
-    
         self.assertIn('access', response.data)
     
     

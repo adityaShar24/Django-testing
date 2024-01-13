@@ -11,10 +11,11 @@ class TestSetUp(APITestCase):
         self.login_url = reverse('login')
         self.list_url = reverse('list')
         
-        self.user = self.create_test_user(username='krisna', password='viswa')
+        self.user = self.create_test_user(username='anotheruser', password='anotheruseris')
         self.access_token = str(AccessToken.for_user(self.user))
         
         self.create_task_url = reverse('create')
+        
         
         self.task = Task.objects.create(title= 'Test Task' , user = self.user)
         

@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN
 from ..serializers.task_serializer import TaskSerializer
 from ..models.task_model import Task
 from ..utils.constants import PERMISSION_DENIED_MESSAGE , TASK_UPDATED_MESSAGE
@@ -44,10 +44,10 @@ class UpdateTaskView(APIView):
         
         if task.user.id != request.user.id:
             response_data = {
-                "message": PERMISSION_DENIED_MESSAGE
+                "message": PERMISSION_DENIED_MESSAGE,
             }
 
-            response = Response(response_data , HTTP_201_CREATED)
+            response = Response(response_data , HTTP_403_FORBIDDEN)
         else:
             data = {
                 'title': request.data.get('title'),

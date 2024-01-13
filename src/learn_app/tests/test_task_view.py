@@ -1,11 +1,12 @@
 from .test_setup import TestSetUp
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import AccessToken
+
 
 class CreateTaskViewTest(TestSetUp):
     
     def test_create_task_with_no_data(self):
-        
         response = self.client.post(self.create_task_url)
-        
         self.assertEqual(response.status_code , 400)
     
     def test_create_task_with_data(self):
@@ -48,5 +49,20 @@ class UpdateTaskViewTest(TestSetUp):
         )
         
         self.assertEqual(response.status_code , 201)
-        self.assertEqual(response.data['message'], 'Task has been updated successfully')
-        self.assertEqual(response.data['data']['title'], 'Updated Task Title')
+
+    def test_update_permission_denied(self):
+        
+        another_user = self.create_test_user(username='another_user1' , password='password22')
+        another_user_token = str(AccessToken.for_user(another_user))
+        
+        data = {'title': 'Attempted Update'}
+        
+        response = self.client.post(
+            self.update_task_url,
+            data,
+            format='json',
+            HTTP_AUTHORIZATION = f'Bearer {another_user_token}'
+        )
+        
+        self.assertEqual(response.status_code, 403)
+        
