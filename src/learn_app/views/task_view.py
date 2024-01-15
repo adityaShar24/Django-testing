@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK
 from ..serializers.task_serializer import TaskSerializer
 from ..models.task_model import Task
 from ..utils.constants import PERMISSION_DENIED_MESSAGE , TASK_UPDATED_MESSAGE
@@ -37,6 +37,8 @@ class CreateTaskView(APIView):
         return response
 
 class UpdateTaskView(APIView):
+    
+    authentication_classes = [JWTAuthentication]   
     def post(self , request , pk):
         
         response = None
@@ -68,6 +70,31 @@ class UpdateTaskView(APIView):
                 
             else:
                 response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
+        
+        return response
+
+class GetAllTaskView(APIView):
+    
+    authentication_classes = [JWTAuthentication]   
+    def get(self , request):
+        
+        response = None
+        tasks = Task.objects.all()
+        
+        serializer = TaskSerializer(instance= tasks , many=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+
+            respone_data = {
+                'message': 'fetched all tasks successfully!',
+                'tasks': serializer.data
+            }
+            
+            response = Response(respone_data , HTTP_200_OK)
+        
+        else:
+            response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
         
         return response
         
