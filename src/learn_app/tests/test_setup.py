@@ -20,6 +20,7 @@ class TestSetUp(APITestCase):
         self.task = Task.objects.create(title= 'Test Task' , user = self.user)
         
         self.update_task_url = reverse('update' ,  kwargs={'pk': self.task.id})
+        self.list_tasks_url = reverse('list')
 
         
         self.task_data = {

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK
+from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK 
 from ..serializers.task_serializer import TaskSerializer
 from ..models.task_model import Task
 from ..utils.constants import PERMISSION_DENIED_MESSAGE , TASK_UPDATED_MESSAGE
@@ -54,11 +54,12 @@ class UpdateTaskView(APIView):
             response = Response(response_data , HTTP_403_FORBIDDEN)
         else:
             data = {
-                'title': request.data.get('title'),
+                'title': request.data.get('title' , task.title),
+                'is_completed': request.data.get('is_completed' , task.is_completed),
                 'user': request.user.id
             }
             
-            serializer = TaskSerializer(data= data)
+            serializer = TaskSerializer(task , data= data , partial = True)
             
             if serializer.is_valid():
                 serializer.save()
@@ -68,7 +69,7 @@ class UpdateTaskView(APIView):
                     'data': serializer.data
                 }
                 
-                response = Response(resposne_data , HTTP_201_CREATED)
+                response = Response(resposne_data , HTTP_200_OK)
                 
             else:
                 response = Response(serializer.errors , HTTP_400_BAD_REQUEST)

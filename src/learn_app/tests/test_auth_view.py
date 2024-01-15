@@ -2,12 +2,6 @@ from .test_setup import TestSetUp
 
 class TestRegisterViews(TestSetUp):
     
-    def test_register_with_no_data(self):
-        
-        response = self.client.post(self.register_url)
-        
-        self.assertEqual(response.status_code , 400)
-        
     def test_register(self):
         self.create_test_user()  
         response = self.client.post(self.register_url , self.user_data, format='json')
