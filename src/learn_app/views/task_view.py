@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK
 from ..serializers.task_serializer import TaskSerializer
@@ -7,7 +8,7 @@ from ..utils.constants import PERMISSION_DENIED_MESSAGE , TASK_UPDATED_MESSAGE
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CreateTaskView(APIView):
-    
+    permission_classes = [IsAuthenticated]    
     authentication_classes = [JWTAuthentication]   
     def post(self , request):
     
@@ -37,9 +38,10 @@ class CreateTaskView(APIView):
         return response
 
 class UpdateTaskView(APIView):
+    permission_classes = [IsAuthenticated]    
+    authentication_classes = [JWTAuthentication] 
     
-    authentication_classes = [JWTAuthentication]   
-    def post(self , request , pk):
+    def put(self , request , pk):
         
         response = None
         task = Task.objects.get(id = pk)
@@ -73,9 +75,10 @@ class UpdateTaskView(APIView):
         
         return response
 
-class GetAllTaskView(APIView):
+class ListTaskView(APIView):
+    permission_classes = [IsAuthenticated]    
+    authentication_classes = [JWTAuthentication]  
     
-    authentication_classes = [JWTAuthentication]   
     def get(self , request):
         
         response = None
@@ -83,18 +86,12 @@ class GetAllTaskView(APIView):
         
         serializer = TaskSerializer(instance= tasks , many=True)
         
-        if serializer.is_valid():
-            serializer.save()
 
-            respone_data = {
+        respone_data = {
                 'message': 'fetched all tasks successfully!',
                 'tasks': serializer.data
             }
             
-            response = Response(respone_data , HTTP_200_OK)
-        
-        else:
-            response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
+        response = Response(respone_data , HTTP_200_OK)
         
         return response
-        
