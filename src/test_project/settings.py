@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'learn_app',
+    'test_app',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist',
@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'learn.urls'
+ROOT_URLCONF = 'test_project.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'learn.wsgi.application'
+WSGI_APPLICATION = 'test_project.wsgi.application'
 
 
 # Database
