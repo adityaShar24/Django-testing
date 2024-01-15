@@ -38,4 +38,15 @@ class TestLoginView(TestSetUp):
         self.assertEqual(response.status_code , 201)
         self.assertIn('access', response.data)
     
+class TestListUsers(TestSetUp):
     
+    def test_list_success(self):
+        
+        
+        response = self.client.get(
+            self.list_url , 
+            format='json', 
+            HTTP_AUTHORIZATION = f'Bearer {self.access_token}'
+        )
+        
+        self.assertEqual(response.status_code , 200)

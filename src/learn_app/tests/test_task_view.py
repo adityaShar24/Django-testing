@@ -36,7 +36,7 @@ class CreateTaskViewTest(TestSetUp):
 class UpdateTaskViewTest(TestSetUp):
     
     def test_update_task_success(self):
-        data = {'title': 'Updated Task Title'}
+        data = {'title': 'Updated Task Title' , 'is_completed': True}
         
         response = self.client.put(
             self.update_task_url , 
@@ -45,7 +45,7 @@ class UpdateTaskViewTest(TestSetUp):
             HTTP_AUTHORIZATION = f'Bearer {self.access_token}'
         )
         
-        self.assertEqual(response.status_code , 201)
+        self.assertEqual(response.status_code , 200)
 
     def test_update_permission_denied(self):
         
