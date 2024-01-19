@@ -1,7 +1,7 @@
 from .test_setup import TestSetUp
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import AccessToken
-
+from django.urls import reverse
 
 class CreateTaskViewTest(TestSetUp):
 
@@ -78,3 +78,42 @@ class ListTaskViewTest(TestSetUp):
         
         self.assertIsInstance(response.data['tasks'], list)
         self.assertTrue(all('title' in task for task in response.data['tasks']))
+        
+    def task_list_permission_denied(self):
+        
+        another_user = self.create_test_user(username='another_user1' , password='password22')
+        another_user_token = str(AccessToken.for_user(another_user))
+        
+        response = self.client.get(
+            self.list_tasks_url,
+            format='json',
+            HTTP_AUTHORIZATION=f'Bearer {another_user_token}'
+        )
+        
+        self.assertEqual(response.status_code, 403)
+    
+# class GetDetailTaskViewTest(TestSetUp):
+    
+#     get_detail_task_url = reverse('detail' , kwargs={'id': 1})
+    
+#     def test_get_detail_task_success(self):
+#         response = self.client.get(
+#             self.get_detail_task_url,
+#             format='json',
+#             HTTP_AUTHORIZATION=f'Bearer {self.access_token}'
+#         )
+#         print(response.data)
+#         self.assertEqual(response.status_code, 200)
+        
+#     def test_get_detail_task_permission_denied(self):
+        
+#         another_user = self.create_test_user(username='another_user1' , password='password22')
+#         another_user_token = str(AccessToken.for_user(another_user))
+        
+#         response = self.client.get(
+#             self.get_detail_task_url,
+#             format='json',
+#             HTTP_AUTHORIZATION=f'Bearer {another_user_token}'
+#         )
+        
+#         self.assertEqual(response.status_code, 403)

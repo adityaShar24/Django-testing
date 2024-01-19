@@ -115,8 +115,6 @@ class GetDetailTaskView(APIView):
             
         
         task = Task.objects.get(id = pk )
-        tasks = Task.objects.all()
-        print(tasks)
         
         if task.user.id != request.user.id:
             response_data = {
