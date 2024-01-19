@@ -96,3 +96,42 @@ class ListTaskView(APIView):
         response = Response(respone_data , HTTP_200_OK)
         
         return response
+    
+class GetDetailTaskView(APIView):
+    permission_classes = [IsAuthenticated]    
+    authentication_classes = [JWTAuthentication]  
+    
+    def get(self , request):
+        response = None
+        
+        pk = self.request.query_params.get('id')
+        
+        if pk is None:
+            response_data = {
+                "message": "pk is required!",
+            }
+
+            response = Response(response_data , HTTP_400_BAD_REQUEST)
+            
+        
+        task = Task.objects.get(id = pk )
+        tasks = Task.objects.all()
+        print(tasks)
+        
+        if task.user.id != request.user.id:
+            response_data = {
+                "message": PERMISSION_DENIED_MESSAGE,
+            }
+
+            response = Response(response_data , HTTP_403_FORBIDDEN)
+        else:
+            serializer = TaskSerializer(instance= task)
+            
+            respone_data = {
+                    'message': 'fetched task successfully!',
+                    'task': serializer.data
+                }
+                
+            response = Response(respone_data , HTTP_200_OK)
+        
+        return response
