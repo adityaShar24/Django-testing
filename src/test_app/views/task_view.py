@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK 
+from rest_framework.status import HTTP_201_CREATED , HTTP_400_BAD_REQUEST , HTTP_403_FORBIDDEN , HTTP_200_OK  , HTTP_404_NOT_FOUND
 from ..serializers.task_serializer import TaskSerializer
 from ..models.task_model import Task
 from ..utils.constants import PERMISSION_DENIED_MESSAGE , TASK_UPDATED_MESSAGE
@@ -11,18 +11,16 @@ class CreateTaskView(APIView):
     permission_classes = [IsAuthenticated]    
     authentication_classes = [JWTAuthentication]   
     def post(self , request):
-    
-        response = None
-        
-        data = {
-            'title': request.data.get('title'),
-            'user': request.user.id
-        }
-        
-        serializer = TaskSerializer(data= data)
-        
-        
-        if serializer.is_valid():
+        try:
+            response = None
+            
+            data = {
+                'title': request.data.get('title'),
+                'user': request.user.id
+            }
+            
+            serializer = TaskSerializer(data= data)
+            serializer.is_valid(raise_exception=True)
             serializer.save()
             
             resposne_data = {
@@ -32,27 +30,22 @@ class CreateTaskView(APIView):
             
             response = Response(resposne_data , HTTP_201_CREATED)
         
-        else:
-            response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            response = Response({'error': str(e)} , HTTP_400_BAD_REQUEST) 
         
-        return response
-
+        return response 
 class UpdateTaskView(APIView):
     permission_classes = [IsAuthenticated]    
     authentication_classes = [JWTAuthentication] 
     
     def put(self , request , pk):
-        
-        response = None
-        task = Task.objects.get(id = pk)
-        
-        if task.user.id != request.user.id:
-            response_data = {
-                "message": PERMISSION_DENIED_MESSAGE,
-            }
-
-            response = Response(response_data , HTTP_403_FORBIDDEN)
-        else:
+        try:
+            response = None
+            task = Task.objects.get(id = pk)
+            
+            if task.user.id != request.user.id:
+                raise PermissionError(PERMISSION_DENIED_MESSAGE)
+            
             data = {
                 'title': request.data.get('title' , task.title),
                 'is_completed': request.data.get('is_completed' , task.is_completed),
@@ -61,19 +54,25 @@ class UpdateTaskView(APIView):
             
             serializer = TaskSerializer(task , data= data , partial = True)
             
-            if serializer.is_valid():
-                serializer.save()
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
                 
-                resposne_data = {
+            resposne_data = {
                     'message': TASK_UPDATED_MESSAGE,
                     'data': serializer.data
-                }
+            }
                 
-                response = Response(resposne_data , HTTP_200_OK)
-                
-            else:
-                response = Response(serializer.errors , HTTP_400_BAD_REQUEST)
-        
+            response = Response(resposne_data , HTTP_200_OK)
+            
+        except PermissionError as e:
+            response = Response({'error': str(e)}, HTTP_403_FORBIDDEN)
+
+        except Task.DoesNotExist:
+            response = Response({'error': 'Task not found'}, HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            response = Response({'error': str(e)}, HTTP_400_BAD_REQUEST)
+
         return response
 
 class ListTaskView(APIView):
