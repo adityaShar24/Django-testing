@@ -80,19 +80,22 @@ class ListTaskView(APIView):
     authentication_classes = [JWTAuthentication]  
     
     def get(self , request):
-        
-        response = None
-        tasks = Task.objects.all()
-        
-        serializer = TaskSerializer(instance= tasks , many=True)
-        
-
-        respone_data = {
-                'message': 'fetched all tasks successfully!',
-                'tasks': serializer.data
-            }
+        try:
+            response = None
+            tasks = Task.objects.all()
             
-        response = Response(respone_data , HTTP_200_OK)
+            serializer = TaskSerializer(instance= tasks , many=True)
+            
+
+            respone_data = {
+                    'message': 'fetched all tasks successfully!',
+                    'tasks': serializer.data
+                }
+                
+            response = Response(respone_data , HTTP_200_OK)
+        
+        except Exception as e:
+            response = Response({'error': str(e)} , HTTP_400_BAD_REQUEST)
         
         return response
     
@@ -101,27 +104,19 @@ class GetDetailTaskView(APIView):
     authentication_classes = [JWTAuthentication]  
     
     def get(self , request):
-        response = None
-        
-        pk = self.request.query_params.get('id')
-        
-        if pk is None:
-            response_data = {
-                "message": "pk is required!",
-            }
-
-            response = Response(response_data , HTTP_400_BAD_REQUEST)
+        try:
+            response = None
             
-        
-        task = Task.objects.get(id = pk )
-        
-        if task.user.id != request.user.id:
-            response_data = {
-                "message": PERMISSION_DENIED_MESSAGE,
-            }
+            task_Id = self.request.query_params.get('id')
+            
+            if task_Id is None:
+                raise ValueError('id is required')
+            
+            task = Task.objects.get(id = task_Id )
+            
+            if task.user.id != request.user.id:
+                raise PermissionError(PERMISSION_DENIED_MESSAGE)
 
-            response = Response(response_data , HTTP_403_FORBIDDEN)
-        else:
             serializer = TaskSerializer(instance= task)
             
             respone_data = {
@@ -130,5 +125,17 @@ class GetDetailTaskView(APIView):
                 }
                 
             response = Response(respone_data , HTTP_200_OK)
+        
+        except PermissionError as e:
+            response = Response({'error': str(e)}, HTTP_403_FORBIDDEN)
+        
+        except Task.DoesNotExist:
+            response = Response({'error': 'Task not found'}, HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            response = Response({'error': str(e)} , HTTP_400_BAD_REQUEST)   
+        
+        except ValueError as e:
+            response = Response({'error': str(e)} , HTTP_400_BAD_REQUEST)
         
         return response
