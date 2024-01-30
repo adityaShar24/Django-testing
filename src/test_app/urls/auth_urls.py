@@ -6,5 +6,4 @@ urlpatterns = [
     path('register' , RegisterView.as_view() , name='register'),
     path('login' , LoginView.as_view() , name='login'),
     path('list' , ListUsersView.as_view() , name='list'),
-    
 ]

@@ -9,7 +9,7 @@ class Task(models.Model):
     
     date = models.DateTimeField(auto_now_add=True)
     
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE , related_names = 'tasks')
 
     def __str__(self):
         return self.title
